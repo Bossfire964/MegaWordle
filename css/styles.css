@@ -1,0 +1,38 @@
+body {
+    background-color: rgb(0, 0, 0);
+}
+
+.text {
+    color: rgb(255, 255, 255);
+}
+
+#mainTitle {
+    position: absolute;
+    top: 10%;
+    left: 40%;
+    width: 15%;
+    height: 5%;
+}
+
+#playButton {
+    position: absolute;
+    top: 40%;
+    left: 40%;
+    width: 15%;
+    height: 5%;
+}
+
+#classicButton {
+    position: absolute;
+    top: 40%;
+    left: 40%;
+    width: 8%;
+    height: 5%;
+}
+#megaButton {
+    position: absolute;
+    top: 40%;
+    left: 48%;
+    width: 8%;
+    height: 5%;
+}
