@@ -1,13 +1,19 @@
 //percents
 const boxColumnStart = 23;
 const boxColumnSpacing = 1;
-const boxRowStart = 2
+const boxRowStart = 15;
 const boxRowSpacing = 3;
 const boxLength = 10;
 //percents
 
 let alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXY";
 let minimunWordScore = 200;
+let boxLetterFontConverstion = 75/2168;
+let effects = true;
+
+let wordleInformation = document.getElementById("informationLabel");
+let wordleDiv = document.getElementById("wordleBox");
+
 
 //vars
 var currentColumn = 0;
@@ -35,21 +41,28 @@ function makeWordleWord() {
 makeWordleWord();
 
 
-const wordleDiv = document.getElementById("wordleBox");
-
-for (var i2=0; i2<6;i2++) {
-    for (var i = 0; i <5; i++) {
-        var newBox = document.createElement("label");
-        newBox.className = "letterBox";
-        newBox.id = "box"+i+"row"+i2;
-        //newBox.style.width = (window.screen.height*0.1)+'px'
-        newBox.style.left = (boxColumnStart + (i*boxLength)+(i*boxColumnSpacing)) + '%';
-        newBox.style.top = (boxRowStart + (i2*boxLength) + (i2*boxRowSpacing)) + '%';
-        wordleDiv.appendChild(newBox);
+function makeBoard() {
+    for (var i2=0; i2<6;i2++) {
+        for (var i = 0; i <5; i++) {
+            var newBox = document.createElement("label");
+            newBox.className = "letterBox";
+            newBox.id = "box"+i+"row"+i2;
+            //newBox.style.width = (window.screen.height*0.1)+'px'
+            newBox.style.fontSize = Math.round(boxLetterFontConverstion*(window.innerHeight+window.innerWidth)) + 'px';
+            console.log(Math.round(boxLetterFontConverstion*(window.innerHeight+window.innerWidth)) + 'px');
+            newBox.style.left = (boxColumnStart + (i*boxLength)+(i*boxColumnSpacing)) + '%';
+            newBox.style.top = (boxRowStart + (i2*boxLength) + (i2*boxRowSpacing)) + '%';
+            wordleDiv.appendChild(newBox);
+        }
     }
 }
+makeBoard();
+
 
 document.addEventListener("keydown", function(e) {
+    if (currentRow == 6) {
+        window.location.href = "../index.html";
+    }
     if (e.key == "Enter" && currentColumn == 5) {
         var word = "";
         for (var i = 0; i < 5; i++) {
@@ -80,6 +93,11 @@ function checkWordleWord(guess) {
                 colorRow(currentRow, guess);
                 currentRow++;
                 currentColumn = 0;
+                if (guess == gameWord) {
+                    currentRow = 6;
+                } else if (currentRow == 6) {
+                    wordleInformation.innerHTML = "The Word Was " + gameWord;
+                }
                 return;
             }
         }
@@ -103,14 +121,26 @@ function colorRow(row, guess) {
     for (var i = 0; i < 5; i++) {
         if (guess[i] == gameWord[i]) {
             document.getElementById("box"+i+"row"+row).style.backgroundColor = 'green';
-            remainingList.pop(remainingList.indexOf(guess[i]-1));
+            remainingList.splice(remainingList.indexOf(guess[i]), 1);
         } else if (remainingList.includes(guess[i])) {
             document.getElementById("box"+i+"row"+row).style.backgroundColor = 'orange';
-            remainingList.pop(remainingList.indexOf(guess[i]-1));
+            remainingList.splice(remainingList.indexOf(guess[i]), 1);
         } else {
             document.getElementById("box"+i+"row"+row).style.backgroundColor = 'grey';
         }
-        console.log(remainingList);
         
     }
 }
+
+console.log(window.innerHeight+window.innerWidth);
+
+//TODO
+//Pop up for pratice mode to select between 2 and 15 letter words(run singlePlayer.js first then wordle.js)
+//Adjust the size of the box and the font size for the bigger wordles
+//Ask for row amount Min 1 and max 100
+
+//Mega mode
+//pop up for all the settings
+//timer for each word input
+//Coins for correct guesses
+//Buy things with coins like time freeze, and hints
