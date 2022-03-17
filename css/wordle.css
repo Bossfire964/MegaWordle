@@ -20,3 +20,37 @@
     font-family: 'Lucida Sans' 
     ;
 }
+
+#settingBackground {
+    z-index: 1;
+    position: absolute;
+    left: 35%;
+    top: 35%;
+    width: 30%;
+    height: 30%;
+    background-color: white;
+    font-family: 'Lucida Sans';
+
+}
+
+.settings {
+    z-index: 2;
+}
+
+#rowTextInput {
+    position: absolute;
+    top: 45%;
+    left: 40%;
+}
+
+#attemptsTextInput {
+    position: absolute;
+    top: 50%;
+    left: 40%;
+}
+
+#keepSettingsButton {
+    position: absolute;
+    top: 55%;
+    left: 40%;
+}
