@@ -135,7 +135,7 @@ function colorRow(row, guess) {
 console.log(window.innerHeight+window.innerWidth);
 
 //TODO
-//Pop up for pratice mode to select between 2 and 15 letter words(run singlePlayer.js first then wordle.js)
+//Pop up for pratice mode to select between 2 and 15 letter words
 //Adjust the size of the box and the font size for the bigger wordles
 //Ask for row amount Min 1 and max 100
 
