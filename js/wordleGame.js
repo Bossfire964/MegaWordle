@@ -7,7 +7,7 @@ const boxLength = 10;
 //percents
 
 let alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXY";
-let minimunWordScore = 200;
+let minimunWordScore = 800;
 let boxLetterFontConverstion = 75/2168;
 let effects = true;
 
@@ -21,16 +21,31 @@ var currentRow = 0;
 var gameWord = "";
 //vars
 
+const badChars = [" ", "-"];
+function includesBadChars(string) {
+    for (let i = 0; i < string.length; i++) {
+        for (let j = 0; j < badChars.length; j++) {
+            if (string[i] == badChars) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
 //making wordle word
 function makeWordleWord() {
-    httpGetAsync("https://api.datamuse.com/words?sp="+(alphabet[Math.floor(Math.random()*25)].toLowerCase())+"????", function(response) {
+    console.log(gameSpots);
+    var questionMarks = "";
+    for (var i = 0; i < gameSpots-1; i++) {questionMarks += "?"}
+    httpGetAsync("https://api.datamuse.com/words?sp="+(alphabet[Math.floor(Math.random()*25)].toLowerCase())+questionMarks, function(response) {
     var points = 0;
     var selection;
     if (JSON.parse(response).length == 0) {
         makeWordleWord();
         return;
     }
-    while (gameWord.length != 5 && points < minimunWordScore) {
+    while (gameWord.length != gameSpots || points < minimunWordScore || includesBadChars(gameWord)) {
         selection = JSON.parse(response)[Math.floor(Math.random()*JSON.parse(response).length)];
         gameWord = selection.word;
         points = gameWord.score;
@@ -42,8 +57,8 @@ makeWordleWord();
 
 
 function makeBoard() {
-    for (var i2=0; i2<6;i2++) {
-        for (var i = 0; i <5; i++) {
+    for (var i2=0; i2<gameAttempts;i2++) {
+        for (var i = 0; i <gameSpots; i++) {
             var newBox = document.createElement("label");
             newBox.className = "letterBox";
             newBox.id = "box"+i+"row"+i2;
@@ -60,21 +75,24 @@ makeBoard();
 
 
 document.addEventListener("keydown", function(e) {
-    if (currentRow == 6) {
+    if (currentRow == gameAttempts) {
         window.location.href = "../index.html";
     }
-    if (e.key == "Enter" && currentColumn == 5) {
+    if (e.key == "Enter" && currentColumn == gameSpots) {
         var word = "";
-        for (var i = 0; i < 5; i++) {
+        for (var i = 0; i < gameSpots; i++) {
             word += document.getElementById("box"+i+"row"+currentRow).innerHTML;
         }        
         checkWordleWord(word);
     } else if (e.key == "Backspace" && currentColumn != 0) {
         document.getElementById("box"+(currentColumn-1)+"row"+currentRow).innerHTML = "";
         currentColumn--;
-    } else if (alphabet.includes(e.key.toUpperCase()) && currentColumn < 5) {
-        document.getElementById("box"+currentColumn+"row"+currentRow).innerHTML = e.key;
-        currentColumn ++;
+    } else if (alphabet.includes(e.key.toUpperCase()) && currentColumn < gameSpots) {
+        if (currentColumn != gameSpots) {
+            document.getElementById("box"+currentColumn+"row"+currentRow).innerHTML = e.key;
+            currentColumn ++;
+        }
+        
     }
     
 });
@@ -87,15 +105,14 @@ function checkWordleWord(guess) {
     httpGetAsync("https://api.datamuse.com/words?sp="+guess[0]+questions+guess[guess.length-1], function(response) {
        
     var results = JSON.parse(response); 
-    console.log("https://api.datamuse.com/words?sp="+guess[0]+questions+guess[guess.length-1]);
         for (var i = 0; i < results.length; i++) {
             if (results[i].word == guess) {
                 colorRow(currentRow, guess);
                 currentRow++;
                 currentColumn = 0;
                 if (guess == gameWord) {
-                    currentRow = 6;
-                } else if (currentRow == 6) {
+                    currentRow = gameAttempts;
+                } else if (currentRow == gameAttempts) {
                     wordleInformation.innerHTML = "The Word Was " + gameWord;
                 }
                 return;
@@ -118,7 +135,7 @@ function httpGetAsync(theUrl, callback)
 
 function colorRow(row, guess) {
     var remainingList = gameWord.split("");
-    for (var i = 0; i < 5; i++) {
+    for (var i = 0; i < gameSpots; i++) {
         if (guess[i] == gameWord[i]) {
             document.getElementById("box"+i+"row"+row).style.backgroundColor = 'green';
             remainingList.splice(remainingList.indexOf(guess[i]), 1);
@@ -132,7 +149,6 @@ function colorRow(row, guess) {
     }
 }
 
-console.log(window.innerHeight+window.innerWidth);
 
 //TODO
 //Pop up for pratice mode to select between 2 and 15 letter words
