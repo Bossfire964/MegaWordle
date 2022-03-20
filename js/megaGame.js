@@ -5,7 +5,7 @@ let eventTimer = document.getElementById("eventTimer");
 
 
 const randomEventsTable = ["timeFreeze", "randomWord", "allGreyLetters", "startOver", "newWord", "letterHint", "inputDelay", "responsiveColoring"];
-const randomEventsTables = ["timeFreeze"];
+const randomEventsTables = ["allGreyLetters"];
 
 
 //temp
@@ -16,7 +16,6 @@ const eventTime = 5;
 var timeLeft = gameTime;
 var eventTimeLeft = eventTime;
 var timeFrozen = false;
-var randomWord = "";
 
 keepSettingsButton.addEventListener("click", function(e) {
     gameSpots = document.getElementById("rowTextInput").value;
@@ -68,6 +67,20 @@ function randomEvent() {
             }, 5000);
             break;
         case "randomWord":
-
+            getRandomWord(function(word) {
+                for (var i = 0; i < gameSpots; i++) {
+                    document.getElementById("box"+i+"row"+currentRow).innerHTML = word[i];
+                }
+                colorRow(currentRow, word);
+                currentRow++;
+                currentColumn = 0;
+            });
     }
 }
+
+async function getRandomWord(callback) {
+    const word = await makeWordleWord();
+    callback(word);
+}
+
+//work on grey letters

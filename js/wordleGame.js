@@ -34,11 +34,11 @@ function includesBadChars(string) {
 }
 
 //making wordle word
-async function makeWordleWord(forGame) {
+async function makeWordleWord() {
     var gameword = "";
     var questionMarks = "";
     for (var i = 0; i < gameSpots-1; i++) {questionMarks += "?"}
-    httpGetAsync("https://api.datamuse.com/words?sp="+(alphabet[Math.floor(Math.random()*25)].toLowerCase())+questionMarks, function(response) {
+    const response = await httpGetAsync("https://api.datamuse.com/words?sp="+(alphabet[Math.floor(Math.random()*25)].toLowerCase())+questionMarks);
     var points = 0;
     var selection;
     if (JSON.parse(response).length == 0) {
@@ -49,17 +49,15 @@ async function makeWordleWord(forGame) {
         gameword = selection.word;
         points = selection.score;
     }
-    if (forGame) {
-        gameWord = gameword;
-        console.log("Game word is " + gameWord);
-    } else {
-        randomWord = gameword;
-    }
-    
-});
+    console.log(gameword);
+    return gameword;
 }
-makeWordleWord(true);
-//make it async
+
+async function makeGameWord() {
+    gameWord = await makeWordleWord();
+    console.log("Game word " + gameWord);
+}
+makeGameWord();
 
 
 function makeBoard() {
@@ -103,13 +101,12 @@ document.addEventListener("keydown", function(e) {
     
 });
 
-function checkWordleWord(guess) {
+async function checkWordleWord(guess) {
     var questions = "";
     for (var i = 0; i <guess.length-2; i++) {
         questions += "?";
     }
-    httpGetAsync("https://api.datamuse.com/words?sp="+guess[0]+questions+guess[guess.length-1], function(response) {
-       
+    const response = await httpGetAsync("https://api.datamuse.com/words?sp="+guess[0]+questions+guess[guess.length-1]);
     var results = JSON.parse(response); 
         for (var i = 0; i < results.length; i++) {
             if (results[i].word == guess) {
@@ -125,18 +122,20 @@ function checkWordleWord(guess) {
             }
         }
         console.log("Nope");
-    });
 }
 
 function httpGetAsync(theUrl, callback)
 {
-    var xmlHttp = new XMLHttpRequest();
-    xmlHttp.onreadystatechange = function() { 
-        if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
-            callback(xmlHttp.responseText);
-    }
-    xmlHttp.open("GET", theUrl, true); // true for asynchronous 
-    xmlHttp.send(null);
+    return new Promise(resolve => {
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.onreadystatechange = function() { 
+            if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+                resolve(xmlHttp.responseText);
+        }
+        xmlHttp.open("GET", theUrl, true); // true for asynchronous 
+        xmlHttp.send(null);
+    });
+
 }
 
 function colorRow(row, guess) {
@@ -155,6 +154,7 @@ function colorRow(row, guess) {
     }
 }
 
+//ASYNC for wordle word
 
 //Mega mode
 //pop up for all the settings
