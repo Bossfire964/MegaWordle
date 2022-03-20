@@ -1,5 +1,5 @@
 //percents
-const boxColumnStart = 23;
+const boxColumnStart = classic ? 23:5;//23
 const boxColumnSpacing = 1;
 const boxRowStart = 15;
 const boxRowSpacing = 3;
@@ -150,13 +150,9 @@ function colorRow(row, guess) {
 }
 
 
-//TODO
-//Pop up for pratice mode to select between 2 and 15 letter words
-//Adjust the size of the box and the font size for the bigger wordles
-//Ask for row amount Min 1 and max 100
-
 //Mega mode
 //pop up for all the settings
-//timer for each word input
+//overall timer for
 //Coins for correct guesses
+//event happens after every clock event
 //Buy things with coins like time freeze, and hints

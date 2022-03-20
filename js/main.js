@@ -4,7 +4,11 @@ const classicButton = document.getElementById("classicButton");
 const megaButton = document.getElementById("megaButton");
 
 classicButton.addEventListener("click", function (e) {
-    window.location.href="html/singlePlayer.html";
+    window.location.href="html/classicGame.html";
+});
+
+megaButton.addEventListener("click", function (e) {
+    window.location.href="html/megaGame.html";
 });
 
 playButton.addEventListener("mouseover", function(e) {

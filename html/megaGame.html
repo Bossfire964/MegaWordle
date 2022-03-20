@@ -10,6 +10,8 @@
 </head>
 <body>
     <h4 id="informationLabel" class="text"></h4>
+    <h4 id="gameTimer" class="text" hidden="true">Time Left:</h4>
+    <h4 id="eventTimer" class="text" hidden="true">Event At:</h4>
     <div id="wordleBox"></div>
     <div id="gameSettings">
         <h2 id="settingBackground"></h2>
@@ -19,11 +21,11 @@
     </div>
     <script>
         //globals vars
-        var classic = true;
+        var classic = false;
         var gameSpots = 5;
         var gameAttempts = 6;
     </script>
-    <script src="../js/singlePlayer.js"></script>
+    <script src="../js/megaGame.js"></script>
     
 </body>
 </html>
