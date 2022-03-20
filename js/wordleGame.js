@@ -34,26 +34,32 @@ function includesBadChars(string) {
 }
 
 //making wordle word
-function makeWordleWord() {
-    console.log(gameSpots);
+async function makeWordleWord(forGame) {
+    var gameword = "";
     var questionMarks = "";
     for (var i = 0; i < gameSpots-1; i++) {questionMarks += "?"}
     httpGetAsync("https://api.datamuse.com/words?sp="+(alphabet[Math.floor(Math.random()*25)].toLowerCase())+questionMarks, function(response) {
     var points = 0;
     var selection;
     if (JSON.parse(response).length == 0) {
-        makeWordleWord();
-        return;
+        return makeWordleWord();
     }
-    while (gameWord.length != gameSpots || points < minimunWordScore || includesBadChars(gameWord)) {
+    while (gameword.length != gameSpots || points < minimunWordScore || includesBadChars(gameword)) {
         selection = JSON.parse(response)[Math.floor(Math.random()*JSON.parse(response).length)];
-        gameWord = selection.word;
-        points = gameWord.score;
+        gameword = selection.word;
+        points = selection.score;
     }
-    console.log("Game word is " + gameWord);
+    if (forGame) {
+        gameWord = gameword;
+        console.log("Game word is " + gameWord);
+    } else {
+        randomWord = gameword;
+    }
+    
 });
 }
-makeWordleWord();
+makeWordleWord(true);
+//make it async
 
 
 function makeBoard() {

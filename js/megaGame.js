@@ -4,6 +4,10 @@ let gameTimer = document.getElementById("gameTimer");
 let eventTimer = document.getElementById("eventTimer");
 
 
+const randomEventsTable = ["timeFreeze", "randomWord", "allGreyLetters", "startOver", "newWord", "letterHint", "inputDelay", "responsiveColoring"];
+const randomEventsTables = ["timeFreeze"];
+
+
 //temp
 const gameTime = 30;
 const eventTime = 5;
@@ -11,6 +15,8 @@ const eventTime = 5;
 
 var timeLeft = gameTime;
 var eventTimeLeft = eventTime;
+var timeFrozen = false;
+var randomWord = "";
 
 keepSettingsButton.addEventListener("click", function(e) {
     gameSpots = document.getElementById("rowTextInput").value;
@@ -34,17 +40,34 @@ function runEventTimers() {
     eventTimer.hidden = false;
     gameTimer.innerHTML = "Time Left: " + gameTime;
     setInterval(function() {
-        timeLeft--;
-        eventTimeLeft--;
+        if (!timeFrozen) {
+            timeLeft--;
+            eventTimeLeft--;
+        }
         if (timeLeft == 0) {
             //game over
             window.location.href = "../index.html";
         }
         if (eventTimeLeft == 0) {
-            //do random event
+            randomEvent();
             eventTimeLeft = eventTime;
         }
         gameTimer.innerHTML = "Time Left: " + timeLeft;
         eventTimer.innerHTML = "Event At: " + eventTimeLeft;
     }, 1000)
+}
+
+function randomEvent() {
+    var event = randomEventsTables[Math.floor(Math.random() * randomEventsTables.length)];
+    console.log(event);
+    switch (event) {
+        case "timeFreeze":    
+            timeFrozen = true;
+            setTimeout(function() {
+                timeFrozen = false;
+            }, 5000);
+            break;
+        case "randomWord":
+
+    }
 }
