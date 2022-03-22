@@ -5,12 +5,12 @@ let eventTimer = document.getElementById("eventTimer");
 
 
 const randomEventsTable = ["timeFreeze", "randomWord", "allGreyLetters", "startOver", "newWord", "letterHint", "inputDelay", "responsiveColoring"];
-const randomEventsTables = ["allGreyLetters"];
+const randomEventsTables = ["startOver"];
 
 
 //temp
 const gameTime = 30;
-const eventTime = 5;
+const eventTime = 10;
 //temp
 
 var timeLeft = gameTime;
@@ -75,6 +75,19 @@ function randomEvent() {
                 currentRow++;
                 currentColumn = 0;
             });
+            break;
+        case "allGreyLetters":
+            const boxData = getColorsOfBoxes();
+            for (var i = 0; i < currentRow; i++) {
+                for (var j=0; j<gameSpots; j++) {
+                    document.getElementById("box"+j+"row"+i).style.backgroundColor = "grey";
+                }
+            }
+            setTimeout(function() {
+                setColorsOfBoxes(boxData);
+            }, 5000);
+            break;
+            
     }
 }
 
@@ -83,4 +96,50 @@ async function getRandomWord(callback) {
     callback(word);
 }
 
-//work on grey letters
+//g is green
+//o is orange
+//b is nothing
+//n is new row
+
+function setColorsOfBoxes(data) {
+    const rowData = data.split("n");
+    for (var i = 0; i < currentRow; i++) {
+        for (var j=0; j<gameSpots; j++) {
+            var color = "";
+            switch(rowData[i][j]) {
+                case "g":
+                    color = "green";
+                    break;
+                case "o":
+                    color = "orange";
+                    break;
+                case "b":
+                    color = "grey";
+                    break;
+            }
+            document.getElementById("box"+j+"row"+i).style.backgroundColor = color;
+        }
+    }
+}
+
+function getColorsOfBoxes(){
+    var returnString = "";
+    for (var i = 0; i < currentRow; i++) {
+        for (var j=0; j<gameSpots; j++) {
+            switch(document.getElementById("box"+j+"row"+i).style.backgroundColor) {
+                case "grey":
+                    returnString += "b";
+                    break;
+                case "orange":
+                    returnString += "o";
+                    break;
+                case "green":
+                    returnString += "g";
+                    break;
+            }
+        }
+        returnString += "n"
+    }
+    return returnString;
+}
+//work on start over
