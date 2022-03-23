@@ -139,22 +139,31 @@ function httpGetAsync(theUrl, callback)
 }
 
 function colorRow(row, guess) {
+    var orangeAmount = 0;
     var remainingList = gameWord.split("");
     for (var i = 0; i < gameSpots; i++) {
         if (guess[i] == gameWord[i]) {
             document.getElementById("box"+i+"row"+row).style.backgroundColor = 'green';
             remainingList.splice(remainingList.indexOf(guess[i]), 1);
+            if (!classic) {
+                coins += 1;
+            }
         } else if (remainingList.includes(guess[i])) {
             document.getElementById("box"+i+"row"+row).style.backgroundColor = 'orange';
             remainingList.splice(remainingList.indexOf(guess[i]), 1);
+            orangeAmount += 1;
+            if (!classic && orangeAmount >=3) {
+                coins += 1;
+            }
         } else {
             document.getElementById("box"+i+"row"+row).style.backgroundColor = 'grey';
         }
         
     }
+    if (!classic) {
+        document.getElementById("coinCount").innerHTML = "Coins: " + coins;
+    }
 }
-
-//ASYNC for wordle word
 
 //Mega mode
 //pop up for all the settings

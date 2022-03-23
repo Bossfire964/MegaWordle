@@ -2,6 +2,8 @@ let keepSettingsButton = document.getElementById("keepSettingsButton");
 let settingsBox = document.getElementById("gameSettings");
 let gameTimer = document.getElementById("gameTimer");
 let eventTimer = document.getElementById("eventTimer");
+let coinCount = document.getElementById("coinCount");
+
 
 
 const randomEventsTable = ["timeFreeze", "randomWord", "allGreyLetters", "startOver", "newWord", "letterHint", "inputDelay", "responsiveColoring"];
@@ -11,11 +13,14 @@ const randomEventsTables = ["startOver"];
 //temp
 const gameTime = 30;
 const eventTime = 10;
+const startingCoins = 3;
 //temp
 
 var timeLeft = gameTime;
 var eventTimeLeft = eventTime;
 var timeFrozen = false;
+
+var coins = startingCoins;
 
 keepSettingsButton.addEventListener("click", function(e) {
     gameSpots = document.getElementById("rowTextInput").value;
@@ -37,6 +42,8 @@ keepSettingsButton.addEventListener("click", function(e) {
 function runEventTimers() {
     gameTimer.hidden = false;
     eventTimer.hidden = false;
+    coinCount.hidden = false;
+    coinCount.innerHTML = "Coins: " + coins;
     gameTimer.innerHTML = "Time Left: " + gameTime;
     setInterval(function() {
         if (!timeFrozen) {
@@ -87,7 +94,16 @@ function randomEvent() {
                 setColorsOfBoxes(boxData);
             }, 5000);
             break;
-            
+        case "startOver":
+            for (var i = 0; i < currentRow+1; i++) {
+                for (var j=0; j<gameSpots; j++) {
+                    document.getElementById("box"+j+"row"+i).innerHTML = "";
+                    document.getElementById("box"+j+"row"+i).style.backgroundColor = "black";
+                }
+            }
+            currentRow = 0;
+            currentColumn = 0;
+            break;
     }
 }
 
@@ -142,4 +158,12 @@ function getColorsOfBoxes(){
     }
     return returnString;
 }
-//work on start over
+
+
+
+
+//buying section
+
+//slot machines
+//speed wordle
+//speed typing
