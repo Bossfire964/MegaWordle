@@ -7,12 +7,12 @@ let coinCount = document.getElementById("coinCount");
 
 
 const randomEventsTable = ["timeFreeze", "randomWord", "allGreyLetters", "startOver", "newWord", "letterHint", "inputDelay", "responsiveColoring"];
-const randomEventsTables = ["inputDelay"];
+const randomEventsTables = ["letterHint"];
 
 
 //temp
 const gameTime = 180;
-const eventTime = 10;
+const eventTime = 30;
 const startingCoins = 3;
 //temp
 
@@ -127,9 +127,8 @@ function randomEvent() {
 			}
 			break;
 		case "letterHint":
-			const randomSpot = Math.floor(Math.random() * gameSpots-1);
-			console.log("box"+currentRow+"row"+randomSpot);
-			console.log(currentRow);
+			const randomSpot = Math.floor(Math.random() * (gameSpots-1));
+			console.log("box"+randomSpot+"row"+currentRow);
 			const hintBox = document.getElementById("box"+randomSpot+"row"+currentRow);
 			hintBox.style.backgroundColor = "green"
 			hintBox.innerHTML = gameWord[randomSpot];
@@ -139,7 +138,7 @@ function randomEvent() {
 			inputDelayed = true;
 			setTimeout(function() {
 				inputDelayed = false;
-			}, 10000);
+			}, 5000);
 			break;
     }
 }
@@ -204,5 +203,3 @@ function getColorsOfBoxes(){
 //slot machines
 //speed wordle
 //speed typing
-
-//EDITED

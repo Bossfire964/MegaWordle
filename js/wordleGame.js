@@ -61,27 +61,43 @@ makeGameWord();
 
 
 function makeBoard() {
-    for (var i2=0; i2<gameAttempts;i2++) {
-        for (var i = 0; i <gameSpots; i++) {
-            var newBox = document.createElement("label");
-            newBox.className = "letterBox";
-            newBox.id = "box"+i+"row"+i2;
-            //newBox.style.width = (window.screen.height*0.1)+'px'
-            newBox.style.fontSize = Math.round(boxLetterFontConverstion*(window.innerHeight+window.innerWidth)) + 'px';
-            console.log(Math.round(boxLetterFontConverstion*(window.innerHeight+window.innerWidth)) + 'px');
-            newBox.style.left = (boxColumnStart + (i*boxLength)+(i*boxColumnSpacing)) + '%';
-            newBox.style.top = (boxRowStart + (i2*boxLength) + (i2*boxRowSpacing)) + '%';
-            wordleDiv.appendChild(newBox);
+    if (classic) {
+        for (var i2=0; i2<gameAttempts;i2++) {
+            makeWordleRow(i2)
         }
+    } else {
+        makeWordleRow(0)
     }
 }
 makeBoard();
 
 
+function makeWordleRow(row) {
+    for (var i = 0; i <gameSpots; i++) {
+        var newBox = document.createElement("label");
+        newBox.className = "letterBox";
+        newBox.id = "box"+i+"row"+row;
+        //newBox.style.width = (window.screen.height*0.1)+'px'
+        newBox.style.fontSize = Math.round(boxLetterFontConverstion*(window.innerHeight+window.innerWidth)) + 'px';
+        console.log(Math.round(boxLetterFontConverstion*(window.innerHeight+window.innerWidth)) + 'px');
+        newBox.style.left = (boxColumnStart + (i*boxLength)+(i*boxColumnSpacing)) + '%';
+        newBox.style.top = (boxRowStart + (row*boxLength) + (row*boxRowSpacing)) + '%';
+        wordleDiv.appendChild(newBox);
+    }
+}
+
 document.addEventListener("keydown", function(e) {
     var delay = 0;
-	if (currentRow == gameAttempts) {
+	if (currentRow == gameAttempts && classic) {
         window.location.href = "../index.html";
+    } else if (currentRow == gameAttempts && !classic) {
+        while(wordleDiv.firstChild) {
+            wordleDiv.removeChild(wordleDiv.firstChild);
+        }
+        makeGameWord();
+        currentRow = 0;
+        currentColumn = 0;
+        makeWordleRow(currentRow);
     }
     if (!classic) {
 		if (inputDelayed) {
@@ -91,27 +107,32 @@ document.addEventListener("keydown", function(e) {
 	setTimeout(function()
 	{
 		if (e.key == "Enter" && currentColumn == gameSpots) {
-        var word = "";
-        for (var i = 0; i < gameSpots; i++) {
-            word += document.getElementById("box"+i+"row"+currentRow).innerHTML;
-        }        
-        checkWordleWord(word);
-		} else if (e.key == "Backspace" && currentColumn != 0) {
-			if (currentColumn != gameSpots) {
-				while (document.getElementById("box"+currentColumn+"row"+currentRow).style.backgroundColor == "green") {
+            var word = "";
+            for (var i = 0; i < gameSpots; i++) {
+                word += document.getElementById("box"+i+"row"+currentRow).innerHTML;
+            }        
+            checkWordleWord(word);
+		} else if (e.key == "Backspace" && currentColumn != 0) { 
+			//console.log("box"+currentColumn+"row"+currentRow);
+			currentColumn--;
+            if (currentColumn != gameSpots) {
+				while (document.getElementById("box"+currentColumn+"row"+currentRow).style.backgroundColor == "green" && currentColumn != 0) {
 					currentColumn--;
 				}
-			} 
-			console.log("box"+currentColumn+"row"+currentRow);
-			currentColumn--;
-			document.getElementById("box"+currentColumn+"row"+currentRow).innerHTML = "";
+			}
+            if (document.getElementById("box"+currentColumn+"row"+currentRow).style.backgroundColor != "green") {
+                document.getElementById("box"+currentColumn+"row"+currentRow).innerHTML = "";
+            }
 		} else if (alphabet.includes(e.key.toUpperCase()) && currentColumn < gameSpots) {
 			if (currentColumn != gameSpots) {
-				while (document.getElementById("box"+currentColumn+"row"+currentRow).style.backgroundColor == "green") {
+				while (document.getElementById("box"+currentColumn+"row"+currentRow).style.backgroundColor == "green" && currentColumn != gameSpots-1) {
 						currentColumn++;
 				}
-				document.getElementById("box"+currentColumn+"row"+currentRow).innerHTML = e.key;
-				currentColumn++;	
+				if (document.getElementById("box"+currentColumn+"row"+currentRow).style.backgroundColor != "green") {
+                    document.getElementById("box"+currentColumn+"row"+currentRow).innerHTML = e.key;
+				    currentColumn++;
+                }
+                	
 			}
 			
 		}
@@ -133,8 +154,10 @@ async function checkWordleWord(guess) {
                 currentColumn = 0;
                 if (guess == gameWord) {
                     currentRow = gameAttempts;
-                } else if (currentRow == gameAttempts) {
+                } else if (currentRow == gameAttempts && classic) {
                     wordleInformation.innerHTML = "The Word Was " + gameWord;
+                } else {
+                    makeWordleRow(currentRow);
                 }
                 return;
             }
@@ -189,5 +212,3 @@ function colorRow(row, guess) {
 //Coins for correct guesses
 //event happens after every clock event
 //Buy things with coins like time freeze, and hints
-
-//EDITED
