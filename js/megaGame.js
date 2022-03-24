@@ -7,11 +7,11 @@ let coinCount = document.getElementById("coinCount");
 
 
 const randomEventsTable = ["timeFreeze", "randomWord", "allGreyLetters", "startOver", "newWord", "letterHint", "inputDelay", "responsiveColoring"];
-const randomEventsTables = ["startOver"];
+const randomEventsTables = ["inputDelay"];
 
 
 //temp
-const gameTime = 30;
+const gameTime = 180;
 const eventTime = 10;
 const startingCoins = 3;
 //temp
@@ -19,6 +19,7 @@ const startingCoins = 3;
 var timeLeft = gameTime;
 var eventTimeLeft = eventTime;
 var timeFrozen = false;
+var inputDelayed = false;
 
 var coins = startingCoins;
 
@@ -104,6 +105,42 @@ function randomEvent() {
             currentRow = 0;
             currentColumn = 0;
             break;
+		case "newWord":
+			getRandomWord(function(result) {
+				gameWord = result
+				for (var i = 0; i<currentRow; i++) {
+				var guessWord = "";
+				for (var j = 0; j<gameSpots; j++) {
+					guessWord += document.getElementById("box"+j+"row"+i).innerHTML;
+				}
+				colorRow(i, guessWord);
+
+			}
+			})
+			for (var i = 0; i<currentRow; i++) {
+				var guessWord = "";
+				for (var j = 0; j<gameSpots; j++) {
+					guessWord += document.getElementById("box"+j+"row"+i).innerHTML;
+				}
+				colorRow(i, guessWord);
+
+			}
+			break;
+		case "letterHint":
+			const randomSpot = Math.floor(Math.random() * gameSpots-1);
+			console.log("box"+currentRow+"row"+randomSpot);
+			console.log(currentRow);
+			const hintBox = document.getElementById("box"+randomSpot+"row"+currentRow);
+			hintBox.style.backgroundColor = "green"
+			hintBox.innerHTML = gameWord[randomSpot];
+			
+			break;
+		case "inputDelay":
+			inputDelayed = true;
+			setTimeout(function() {
+				inputDelayed = false;
+			}, 10000);
+			break;
     }
 }
 
@@ -167,3 +204,5 @@ function getColorsOfBoxes(){
 //slot machines
 //speed wordle
 //speed typing
+
+//EDITED

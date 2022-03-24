@@ -79,25 +79,43 @@ makeBoard();
 
 
 document.addEventListener("keydown", function(e) {
-    if (currentRow == gameAttempts) {
+    var delay = 0;
+	if (currentRow == gameAttempts) {
         window.location.href = "../index.html";
     }
-    if (e.key == "Enter" && currentColumn == gameSpots) {
+    if (!classic) {
+		if (inputDelayed) {
+			delay = 1000;
+		}
+	}
+	setTimeout(function()
+	{
+		if (e.key == "Enter" && currentColumn == gameSpots) {
         var word = "";
         for (var i = 0; i < gameSpots; i++) {
             word += document.getElementById("box"+i+"row"+currentRow).innerHTML;
         }        
         checkWordleWord(word);
-    } else if (e.key == "Backspace" && currentColumn != 0) {
-        document.getElementById("box"+(currentColumn-1)+"row"+currentRow).innerHTML = "";
-        currentColumn--;
-    } else if (alphabet.includes(e.key.toUpperCase()) && currentColumn < gameSpots) {
-        if (currentColumn != gameSpots) {
-            document.getElementById("box"+currentColumn+"row"+currentRow).innerHTML = e.key;
-            currentColumn ++;
-        }
-        
-    }
+		} else if (e.key == "Backspace" && currentColumn != 0) {
+			if (currentColumn != gameSpots) {
+				while (document.getElementById("box"+currentColumn+"row"+currentRow).style.backgroundColor == "green") {
+					currentColumn--;
+				}
+			} 
+			console.log("box"+currentColumn+"row"+currentRow);
+			currentColumn--;
+			document.getElementById("box"+currentColumn+"row"+currentRow).innerHTML = "";
+		} else if (alphabet.includes(e.key.toUpperCase()) && currentColumn < gameSpots) {
+			if (currentColumn != gameSpots) {
+				while (document.getElementById("box"+currentColumn+"row"+currentRow).style.backgroundColor == "green") {
+						currentColumn++;
+				}
+				document.getElementById("box"+currentColumn+"row"+currentRow).innerHTML = e.key;
+				currentColumn++;	
+			}
+			
+		}
+	}, delay);
     
 });
 
@@ -171,3 +189,5 @@ function colorRow(row, guess) {
 //Coins for correct guesses
 //event happens after every clock event
 //Buy things with coins like time freeze, and hints
+
+//EDITED
