@@ -7,12 +7,12 @@ let coinCount = document.getElementById("coinCount");
 
 
 const randomEventsTable = ["timeFreeze", "randomWord", "allGreyLetters", "startOver", "newWord", "letterHint", "inputDelay", "responsiveColoring"];
-const randomEventsTables = ["letterHint"];
+const randomEventsTables = ["responsiveColoring"];
 
 
 //temp
 const gameTime = 180;
-const eventTime = 30;
+const eventTime = 10;
 const startingCoins = 3;
 //temp
 
@@ -20,6 +20,7 @@ var timeLeft = gameTime;
 var eventTimeLeft = eventTime;
 var timeFrozen = false;
 var inputDelayed = false;
+var responsiveColoring = false;
 
 var coins = startingCoins;
 
@@ -65,7 +66,7 @@ function runEventTimers() {
 }
 
 function randomEvent() {
-    var event = randomEventsTables[Math.floor(Math.random() * randomEventsTables.length)];
+    var event = randomEventsTable[Math.floor(Math.random() * randomEventsTable.length)];
     console.log(event);
     switch (event) {
         case "timeFreeze":    
@@ -83,6 +84,7 @@ function randomEvent() {
                 currentRow++;
                 currentColumn = 0;
             });
+            makeWordleRow();
             break;
         case "allGreyLetters":
             const boxData = getColorsOfBoxes();
@@ -140,6 +142,18 @@ function randomEvent() {
 				inputDelayed = false;
 			}, 5000);
 			break;
+        case "responsiveColoring":
+            responsiveColoring = true;
+            setTimeout(function() {
+				responsiveColoring = false;
+                for (var i=0; i<gameSpots; i++) {
+                    var item = document.getElementById("box"+i+"row"+currentRow).style.backgroundColor;
+                    if (item == "orange" || item == "rgb(0, 129, 0)") {
+                        document.getElementById("box"+i+"row"+currentRow).style.backgroundColor = "black";
+                    }
+                }
+			}, 5000);
+            break;
     }
 }
 

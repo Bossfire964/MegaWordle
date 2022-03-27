@@ -106,7 +106,14 @@ document.addEventListener("keydown", function(e) {
 	}
 	setTimeout(function()
 	{
-		if (e.key == "Enter" && currentColumn == gameSpots) {
+		for (var i=0; i<gameSpots; i++) {
+            var item = document.getElementById("box"+i+"row"+currentRow).style.backgroundColor;
+            //console.log(item);
+            if (item == "orange" || item == "rgb(0, 129, 0)") {
+                document.getElementById("box"+i+"row"+currentRow).style.backgroundColor = "black";
+            }
+        }
+        if (e.key == "Enter" && currentColumn == gameSpots) {
             var word = "";
             for (var i = 0; i < gameSpots; i++) {
                 word += document.getElementById("box"+i+"row"+currentRow).innerHTML;
@@ -130,7 +137,17 @@ document.addEventListener("keydown", function(e) {
 				}
 				if (document.getElementById("box"+currentColumn+"row"+currentRow).style.backgroundColor != "green") {
                     document.getElementById("box"+currentColumn+"row"+currentRow).innerHTML = e.key;
-				    currentColumn++;
+				    if (!classic) {
+                        if (responsiveColoring) {
+                            // 0,129,0 is green for responsive coloring
+                            if (gameWord[currentColumn] == document.getElementById("box"+currentColumn+"row"+currentRow).innerHTML) {
+                                document.getElementById("box"+currentColumn+"row"+currentRow).style.backgroundColor = "rgb(0,129,0)";
+                            } else if (gameWord.split("").includes(document.getElementById("box"+currentColumn+"row"+currentRow).innerHTML)) {
+                                document.getElementById("box"+currentColumn+"row"+currentRow).style.backgroundColor = "orange";
+                            }
+                        }
+                    }
+                    currentColumn++;
                 }
                 	
 			}
