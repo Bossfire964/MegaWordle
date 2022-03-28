@@ -5,15 +5,20 @@ const boxColumnSpacing = 1;
 const boxRowStart = 15;
 const boxRowSpacing = 3;
 const boxLength = 10;
+const keyboardColumnSpacing = 2.6;
+const keyboardRowSpacing = 4;
+const keyboardStartRow = 1;
+const keyboardKeySize = 3;
 //percents
 
-let alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXY";
+let alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+let qwerty = "QWERTYUIOPASDFGHJKLZXCVBNM";
 let boxLetterFontConverstion = 75/2168;
 let effects = true;
 
 let wordleInformation = document.getElementById("informationLabel");
 let wordleDiv = document.getElementById("wordleBox");
-
+let keyboardGrid = document.getElementById("keyboard");
 
 //vars
 var currentColumn = 0;
@@ -103,6 +108,35 @@ function makeWordleRow(row) {
         wordleDiv.appendChild(newBox);
     }
 }
+
+//making keybord
+function showKeyboard() {
+    for (var i = 0; i < qwerty.length; i++) {
+        var newKey = document.createElement("label");
+        newKey.className = "keyboardKey";
+        newKey.id = "key"+qwerty[i];
+        console.log(qwerty[i]);
+        newKey.innerHTML = qwerty[i];
+        newKey.style.height = keyboardKeySize + "%";
+        newKey.style.width = keyboardKeySize + "%";
+        if (i < 10) {
+            newKey.style.left = boxColumnStart + (i*keyboardColumnSpacing) + (i*keyboardKeySize) + "%";
+            newKey.style.top = keyboardStartRow + "%";
+        } else if (i >= 10 && i < 19) {
+            newKey.style.left = (keyboardColumnSpacing/2) + boxColumnStart + ((i-10)*keyboardColumnSpacing) + ((i-10)*keyboardKeySize) + "%";
+            newKey.style.top = (keyboardStartRow + keyboardRowSpacing) + "%";
+        } else {
+            newKey.style.left = (keyboardColumnSpacing/0.5) + boxColumnStart + ((i-19)*keyboardColumnSpacing) + ((i-19)*keyboardKeySize) + "%";
+            newKey.style.top = (keyboardStartRow + (keyboardRowSpacing*2)) + "%";
+        }
+        /*newKey.style.left = boxColumnStart + ((i-((Math.ceil(i/8)-1)*8))*keyboardColumnSpacing) + "%";
+        newKey.style.top = (keyboardStartRow + (Math.ceil(i/8)-1)*keyboardRowSpacing) + "%";*/
+        keyboardGrid.appendChild(newKey);
+    }
+}
+
+showKeyboard();
+
 
 document.addEventListener("keydown", function(e) {
     var delay = 0;
@@ -220,12 +254,14 @@ function colorRow(row, guess) {
     for (var i = 0; i < gameSpots; i++) {
         if (guess[i] == gameWord[i]) {
             document.getElementById("box"+i+"row"+row).style.backgroundColor = 'green';
+            document.getElementById("key"+guess[i].toUpperCase()).style.backgroundColor = 'green';
             remainingList.splice(remainingList.indexOf(guess[i]), 1);
             if (!classic) {
                 coins += 1;
             }
         } else if (remainingList.includes(guess[i])) {
             document.getElementById("box"+i+"row"+row).style.backgroundColor = 'orange';
+            document.getElementById("key"+guess[i].toUpperCase()).style.backgroundColor = 'orange';
             remainingList.splice(remainingList.indexOf(guess[i]), 1);
             orangeAmount += 1;
             if (!classic && orangeAmount >=3) {
@@ -233,6 +269,7 @@ function colorRow(row, guess) {
             }
         } else {
             document.getElementById("box"+i+"row"+row).style.backgroundColor = 'grey';
+            document.getElementById("key"+guess[i].toUpperCase()).style.backgroundColor = 'black';
         }
         
     }
@@ -249,6 +286,5 @@ function colorRow(row, guess) {
 //Buy things with coins like time freeze, and hints
 
 
-//CONVERT everything to vw for classic
 //Work on keyboard for classic mode and messages like normal wordle
 
