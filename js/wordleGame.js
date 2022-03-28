@@ -1,5 +1,6 @@
 //percents
 const boxColumnStart = classic ? 23:5;//23
+const boxColumnEnd = classic ? 5:23;
 const boxColumnSpacing = 1;
 const boxRowStart = 15;
 const boxRowSpacing = 3;
@@ -7,7 +8,6 @@ const boxLength = 10;
 //percents
 
 let alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXY";
-let minimunWordScore = 800;
 let boxLetterFontConverstion = 75/2168;
 let effects = true;
 
@@ -73,13 +73,17 @@ makeBoard();
 
 
 function makeWordleRow(row) {
+    const boxWorkingWidth = 100-boxColumnStart-boxColumnEnd;
+    const boxWorkingBoxWidth = boxWorkingWidth-(boxColumnSpacing*gameSpots);
     for (var i = 0; i <gameSpots; i++) {
         var newBox = document.createElement("label");
         newBox.className = "letterBox";
         newBox.id = "box"+i+"row"+row;
         //newBox.style.width = (window.screen.height*0.1)+'px'
         newBox.style.fontSize = Math.round(boxLetterFontConverstion*(window.innerHeight+window.innerWidth)) + 'px';
-        console.log(Math.round(boxLetterFontConverstion*(window.innerHeight+window.innerWidth)) + 'px');
+        //console.log(Math.round(boxLetterFontConverstion*(window.innerHeight+window.innerWidth)) + 'px');
+        /*newBox.style.left = (boxColumnStart + (i*boxLength)+(i*boxColumnSpacing)) + '%';
+        newBox.style.top = (boxRowStart + (row*boxLength) + (row*boxRowSpacing)) + '%';*/
         newBox.style.left = (boxColumnStart + (i*boxLength)+(i*boxColumnSpacing)) + '%';
         newBox.style.top = (boxRowStart + (row*boxLength) + (row*boxRowSpacing)) + '%';
         wordleDiv.appendChild(newBox);

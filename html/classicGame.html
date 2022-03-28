@@ -8,20 +8,26 @@
     <link rel="stylesheet" href="../css/styles.css">
     <link rel="stylesheet" href="../css/wordle.css">
 </head>
-<body>
+<img>
+    <img src="../assets/settingscreen/MegaWordleClassicLogo.png" id="classicLogo"></img>
     <h4 id="informationLabel" class="text"></h4>
     <div id="wordleBox"></div>
     <div id="gameSettings">
-        <h2 id="settingBackground"></h2>
-        <input type="text" class="settings" id="rowTextInput">
-        <input type="text" class="settings" id="attemptsTextInput">
-        <button class="settings" id="keepSettingsButton">Continue</button>
+        <input type="text" id="rowTextInput">
+        <h2 id="rowTextLabel">Word Length</h2>
+        <input type="text" id="attemptsTextInput">
+        <h2 id="attemptsTextLabel">Attempts</h2>
+        <input type="text" id="wordScoreTextInput">
+        <h2 id="wordScoreTextLabel">Minimum Word Score</h2>
+        <image id="startGameButton" src="../assets/settingscreen/MegaWordleSettingsStartButton.png"></image>
+        <image id="settingsBackButton" src="../assets/settingscreen/MegaWordleSettingsBackButton.png"></image>
     </div>
     <script>
         //globals vars
         var classic = true;
         var gameSpots = 5;
         var gameAttempts = 6;
+        var minimunWordScore = 800;
     </script>
     <script src="../js/classicGame.js"></script>
     
