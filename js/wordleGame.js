@@ -1,6 +1,6 @@
 //percents
 const boxColumnStart = classic ? 23:5;//23
-const boxColumnEnd = classic ? 5:23;
+const boxColumnEnd = classic ? 23:23;
 const boxColumnSpacing = 1;
 const boxRowStart = 15;
 const boxRowSpacing = 3;
@@ -19,13 +19,15 @@ let wordleDiv = document.getElementById("wordleBox");
 var currentColumn = 0;
 var currentRow = 0;
 var gameWord = "";
+var gameWordSearchIndex = 0;
 //vars
 
 const badChars = [" ", "-"];
 function includesBadChars(string) {
     for (let i = 0; i < string.length; i++) {
         for (let j = 0; j < badChars.length; j++) {
-            if (string[i] == badChars) {
+            //console.log(string)
+            if (string[i] == badChars[j]) {
                 return true;
             }
         }
@@ -41,8 +43,14 @@ async function makeWordleWord() {
     const response = await httpGetAsync("https://api.datamuse.com/words?sp="+(alphabet[Math.floor(Math.random()*25)].toLowerCase())+questionMarks);
     var points = 0;
     var selection;
-    if (JSON.parse(response).length == 0) {
-        return makeWordleWord();
+    if (JSON.parse(response).length == 0 || JSON.parse(response)[0].score < minimunWordScore) {
+        console.log("trying again");
+        gameWordSearchIndex++;
+        if (gameWordSearchIndex > 30) {
+            window.location.reload();
+        } else {
+            return makeWordleWord();
+        }
     }
     while (gameword.length != gameSpots || points < minimunWordScore || includesBadChars(gameword)) {
         selection = JSON.parse(response)[Math.floor(Math.random()*JSON.parse(response).length)];
@@ -50,14 +58,17 @@ async function makeWordleWord() {
         points = selection.score;
     }
     console.log(gameword);
+    gameWordGOOD = true;
     return gameword;
 }
 
 async function makeGameWord() {
+    gameWordSearchIndex = 0;
     gameWord = await makeWordleWord();
     console.log("Game word " + gameWord);
 }
 makeGameWord();
+
 
 
 function makeBoard() {
@@ -79,12 +90,15 @@ function makeWordleRow(row) {
         var newBox = document.createElement("label");
         newBox.className = "letterBox";
         newBox.id = "box"+i+"row"+row;
+        newBox.style.height = boxWorkingBoxWidth/gameSpots + "%";
+        newBox.style.width = boxWorkingBoxWidth/gameSpots + "%";
         //newBox.style.width = (window.screen.height*0.1)+'px'
-        newBox.style.fontSize = Math.round(boxLetterFontConverstion*(window.innerHeight+window.innerWidth)) + 'px';
+        //newBox.style.fontSize = Math.round(boxLetterFontConverstion*(window.innerHeight+window.innerWidth)) + 'px';
         //console.log(Math.round(boxLetterFontConverstion*(window.innerHeight+window.innerWidth)) + 'px');
         /*newBox.style.left = (boxColumnStart + (i*boxLength)+(i*boxColumnSpacing)) + '%';
         newBox.style.top = (boxRowStart + (row*boxLength) + (row*boxRowSpacing)) + '%';*/
-        newBox.style.left = (boxColumnStart + (i*boxLength)+(i*boxColumnSpacing)) + '%';
+        newBox.style.fontSize = (boxWorkingBoxWidth/gameSpots)*0.5 + 'vw';
+        newBox.style.left = (boxColumnStart + (i*(boxWorkingBoxWidth/gameSpots))+(i*boxColumnSpacing)) + '%';
         newBox.style.top = (boxRowStart + (row*boxLength) + (row*boxRowSpacing)) + '%';
         wordleDiv.appendChild(newBox);
     }
@@ -233,3 +247,8 @@ function colorRow(row, guess) {
 //Coins for correct guesses
 //event happens after every clock event
 //Buy things with coins like time freeze, and hints
+
+
+//CONVERT everything to vw for classic
+//Work on keyboard for classic mode and messages like normal wordle
+
