@@ -8,10 +8,10 @@ body {
 
 #mainTitle {
     position: absolute;
-    top: 5%;
-    left: 25%;
-    width: 50%;
-    height: 30%;
+    top: 0%;
+    left: 15%;
+    width: 70%;
+    height: 40%;
 }
 
 #classicButton {
@@ -24,8 +24,8 @@ body {
 
 #megaButton {
     position: absolute;
-    top: 40%;
-    left: 48%;
-    width: 8%;
-    height: 5%;
+    top: 70%;
+    left: 35%;
+    width: 25%;
+    height: 10%;
 }
