@@ -8,27 +8,20 @@ body {
 
 #mainTitle {
     position: absolute;
-    top: 10%;
-    left: 40%;
-    width: 15%;
-    height: 5%;
-}
-
-#playButton {
-    position: absolute;
-    top: 40%;
-    left: 40%;
-    width: 15%;
-    height: 5%;
+    top: 5%;
+    left: 25%;
+    width: 50%;
+    height: 30%;
 }
 
 #classicButton {
     position: absolute;
     top: 40%;
-    left: 40%;
-    width: 8%;
-    height: 5%;
+    left: 35%;
+    width: 25%;
+    height: 10%;
 }
+
 #megaButton {
     position: absolute;
     top: 40%;
