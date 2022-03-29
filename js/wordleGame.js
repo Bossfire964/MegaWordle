@@ -19,12 +19,19 @@ let effects = true;
 let wordleInformation = document.getElementById("informationLabel");
 let wordleDiv = document.getElementById("wordleBox");
 let keyboardGrid = document.getElementById("keyboard");
+let redX = document.getElementById("redX");
+let revealBackground = document.getElementById("revealBackground");
+redX.style.width = (100-boxColumnStart-boxColumnEnd) + "%";
+redX.style.height = "70%";
+redX.style.left = boxColumnStart + "%";
+redX.style.top = boxRowStart + "%";
 
 //vars
 var currentColumn = 0;
 var currentRow = 0;
 var gameWord = "";
 var gameWordSearchIndex = 0;
+var gameOver = false;
 //vars
 
 const badChars = [" ", "-"];
@@ -95,14 +102,19 @@ function makeWordleRow(row) {
         var newBox = document.createElement("label");
         newBox.className = "letterBox";
         newBox.id = "box"+i+"row"+row;
-        newBox.style.height = boxWorkingBoxWidth/gameSpots + "%";
+        if (gameSpots > 4) {
+            newBox.style.height = boxWorkingBoxWidth/gameSpots + "%";
+            newBox.style.fontSize = (boxWorkingBoxWidth/gameSpots)*0.5 + 'vw';
+        } else {
+            newBox.style.height = boxWorkingBoxWidth/5 + "%";
+            newBox.style.fontSize = (boxWorkingBoxWidth/5)*0.5 + 'vw';
+        }
         newBox.style.width = boxWorkingBoxWidth/gameSpots + "%";
         //newBox.style.width = (window.screen.height*0.1)+'px'
         //newBox.style.fontSize = Math.round(boxLetterFontConverstion*(window.innerHeight+window.innerWidth)) + 'px';
         //console.log(Math.round(boxLetterFontConverstion*(window.innerHeight+window.innerWidth)) + 'px');
         /*newBox.style.left = (boxColumnStart + (i*boxLength)+(i*boxColumnSpacing)) + '%';
         newBox.style.top = (boxRowStart + (row*boxLength) + (row*boxRowSpacing)) + '%';*/
-        newBox.style.fontSize = (boxWorkingBoxWidth/gameSpots)*0.5 + 'vw';
         newBox.style.left = (boxColumnStart + (i*(boxWorkingBoxWidth/gameSpots))+(i*boxColumnSpacing)) + '%';
         newBox.style.top = (boxRowStart + (row*boxLength) + (row*boxRowSpacing)) + '%';
         wordleDiv.appendChild(newBox);
@@ -141,7 +153,9 @@ showKeyboard();
 document.addEventListener("keydown", function(e) {
     var delay = 0;
 	if (currentRow == gameAttempts && classic) {
-        window.location.href = "../index.html";
+        //window.location.href = "../index.html";
+        gameOver = true;
+        playWordRevealAnimation(50);
     } else if (currentRow == gameAttempts && !classic) {
         while(wordleDiv.firstChild) {
             wordleDiv.removeChild(wordleDiv.firstChild);
@@ -156,56 +170,59 @@ document.addEventListener("keydown", function(e) {
 			delay = 1000;
 		}
 	}
-	setTimeout(function()
-	{
-		for (var i=0; i<gameSpots; i++) {
-            var item = document.getElementById("box"+i+"row"+currentRow).style.backgroundColor;
-            //console.log(item);
-            if (item == "orange" || item == "rgb(0, 129, 0)") {
-                document.getElementById("box"+i+"row"+currentRow).style.backgroundColor = "black";
+	if (!gameOver) {
+        setTimeout(function()
+        {
+            for (var i=0; i<gameSpots; i++) {
+                var item = document.getElementById("box"+i+"row"+currentRow).style.backgroundColor;
+                //console.log(item);
+                if (item == "orange" || item == "rgb(0, 129, 0)") {
+                    document.getElementById("box"+i+"row"+currentRow).style.backgroundColor = "black";
+                }
             }
-        }
-        if (e.key == "Enter" && currentColumn == gameSpots) {
-            var word = "";
-            for (var i = 0; i < gameSpots; i++) {
-                word += document.getElementById("box"+i+"row"+currentRow).innerHTML;
-            }        
-            checkWordleWord(word);
-		} else if (e.key == "Backspace" && currentColumn != 0) { 
-			//console.log("box"+currentColumn+"row"+currentRow);
-			currentColumn--;
-            if (currentColumn != gameSpots) {
-				while (document.getElementById("box"+currentColumn+"row"+currentRow).style.backgroundColor == "green" && currentColumn != 0) {
-					currentColumn--;
-				}
-			}
-            if (document.getElementById("box"+currentColumn+"row"+currentRow).style.backgroundColor != "green") {
-                document.getElementById("box"+currentColumn+"row"+currentRow).innerHTML = "";
-            }
-		} else if (alphabet.includes(e.key.toUpperCase()) && currentColumn < gameSpots) {
-			if (currentColumn != gameSpots) {
-				while (document.getElementById("box"+currentColumn+"row"+currentRow).style.backgroundColor == "green" && currentColumn != gameSpots-1) {
-						currentColumn++;
-				}
-				if (document.getElementById("box"+currentColumn+"row"+currentRow).style.backgroundColor != "green") {
-                    document.getElementById("box"+currentColumn+"row"+currentRow).innerHTML = e.key;
-				    if (!classic) {
-                        if (responsiveColoring) {
-                            // 0,129,0 is green for responsive coloring
-                            if (gameWord[currentColumn] == document.getElementById("box"+currentColumn+"row"+currentRow).innerHTML) {
-                                document.getElementById("box"+currentColumn+"row"+currentRow).style.backgroundColor = "rgb(0,129,0)";
-                            } else if (gameWord.split("").includes(document.getElementById("box"+currentColumn+"row"+currentRow).innerHTML)) {
-                                document.getElementById("box"+currentColumn+"row"+currentRow).style.backgroundColor = "orange";
+            if (e.key == "Enter" && currentColumn == gameSpots) {
+                var word = "";
+                for (var i = 0; i < gameSpots; i++) {
+                    word += document.getElementById("box"+i+"row"+currentRow).innerHTML;
+                }        
+                checkWordleWord(word);
+            } else if (e.key == "Backspace" && currentColumn != 0) { 
+                //console.log("box"+currentColumn+"row"+currentRow);
+                currentColumn--;
+                if (currentColumn != gameSpots) {
+                    while (document.getElementById("box"+currentColumn+"row"+currentRow).style.backgroundColor == "green" && currentColumn != 0) {
+                        currentColumn--;
+                    }
+                }
+                if (document.getElementById("box"+currentColumn+"row"+currentRow).style.backgroundColor != "green") {
+                    document.getElementById("box"+currentColumn+"row"+currentRow).innerHTML = "";
+                }
+            } else if (alphabet.includes(e.key.toUpperCase()) && currentColumn < gameSpots) {
+                if (currentColumn != gameSpots) {
+                    while (document.getElementById("box"+currentColumn+"row"+currentRow).style.backgroundColor == "green" && currentColumn != gameSpots-1) {
+                            currentColumn++;
+                    }
+                    if (document.getElementById("box"+currentColumn+"row"+currentRow).style.backgroundColor != "green") {
+                        document.getElementById("box"+currentColumn+"row"+currentRow).innerHTML = e.key;
+                        if (!classic) {
+                            if (responsiveColoring) {
+                                // 0,129,0 is green for responsive coloring
+                                if (gameWord[currentColumn] == document.getElementById("box"+currentColumn+"row"+currentRow).innerHTML) {
+                                    document.getElementById("box"+currentColumn+"row"+currentRow).style.backgroundColor = "rgb(0,129,0)";
+                                } else if (gameWord.split("").includes(document.getElementById("box"+currentColumn+"row"+currentRow).innerHTML)) {
+                                    document.getElementById("box"+currentColumn+"row"+currentRow).style.backgroundColor = "orange";
+                                }
                             }
                         }
+                        currentColumn++;
                     }
-                    currentColumn++;
+                        
                 }
-                	
-			}
-			
-		}
-	}, delay);
+                
+            }
+        }, delay);
+    }
+    
     
 });
 
@@ -232,6 +249,53 @@ async function checkWordleWord(guess) {
             }
         }
         console.log("Nope");
+        flashRedX();
+
+}
+
+function playWordRevealAnimation(speed) {
+    document.getElementById("revealBackgroundContainer").hidden = false;
+    const textWriting = "The word is...";
+    var index = 0;
+    const typing = setInterval(function() {
+        if (index == textWriting.length+1) {
+            revealWordAnimation(speed, textWriting);
+            clearInterval(typing);
+        } else {
+            document.getElementById("revealBackgroundShade").innerHTML = textWriting.substring(0, index);
+            index++;
+        }
+    }, speed)
+}
+
+function revealWordAnimation(speed, textWriting) {
+    setTimeout(function() {
+        console.log(gameWord);
+        var index = 0;
+        const wordType = setInterval(function() {
+            if (index == gameWord.length+1) {
+                clearInterval(wordType);
+            } else {
+                document.getElementById("revealBackgroundShade").innerHTML = textWriting + "\n\n\n\n\n\n\n\n" + gameWord.substring(0, index);
+                console.log(document.getElementById("revealBackgroundShade").innerHTML);
+                index++;
+            }
+        }, speed);
+    }, 1000)
+}
+
+
+function flashRedX() {
+    redX.hidden = false;
+    setTimeout(function() {
+        redX.hidden = true;
+        setTimeout(function() {
+            redX.hidden = false;
+            setTimeout(function() {
+                redX.hidden = true;
+            }, 150);
+        }, 150);
+    }, 150);
 }
 
 function httpGetAsync(theUrl, callback)
@@ -269,7 +333,9 @@ function colorRow(row, guess) {
             }
         } else {
             document.getElementById("box"+i+"row"+row).style.backgroundColor = 'grey';
-            document.getElementById("key"+guess[i].toUpperCase()).style.backgroundColor = 'black';
+            if (document.getElementById("key"+guess[i].toUpperCase()).style.backgroundColor != "green" && document.getElementById("key"+guess[i].toUpperCase()).style.backgroundColor != "orange") {
+                document.getElementById("key"+guess[i].toUpperCase()).style.backgroundColor = 'black';
+            }
         }
         
     }
