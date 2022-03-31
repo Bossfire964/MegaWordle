@@ -9,16 +9,23 @@
     <link rel="stylesheet" href="../css/wordle.css">
 </head>
 <body>
+    <img src="../assets/settingscreen/MegaWordleMegaLogo.png" id="megaLogo"></img>
     <h4 id="informationLabel" class="text"></h4>
     <h4 id="gameTimer" class="text" hidden="true">Time Left:</h4>
     <h4 id="coinCount" class="text" hidden="true">Coins:</h4>
     <h4 id="eventTimer" class="text" hidden="true">Event At:</h4>
     <div id="wordleBox"></div>
     <div id="gameSettings">
-        <h2 id="settingBackground"></h2>
-        <input type="text" class="settings" id="rowTextInput">
-        <input type="text" class="settings" id="attemptsTextInput">
-        <button class="settings" id="keepSettingsButton">Continue</button>
+        <input type="text" id="megaRowTextInput">
+        <h2 id="megaRowTextLabel">Word Length</h2>
+        <input type="text" id="megaGameTime">
+        <h2 id="megaGameTimeLabel">Game Time</h2>
+        <input type="text" id="megaEventTimer">
+        <h2 id="megaEventTimerLabel">Event Timer</h2>
+        <input type="text" id="megaMinimumWordScore">
+        <h2 id="megaMinimumWordScoreLabel">Minimum Word Score</h2>
+        <image id="startGameButton" src="../assets/settingscreen/MegaWordleSettingsStartButton.png"></image>
+        <image id="settingsBackButton" src="../assets/settingscreen/MegaWordleSettingsBackButton.png"></image>
     </div>
     <script>
         //globals vars

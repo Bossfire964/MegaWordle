@@ -127,7 +127,6 @@ function showKeyboard() {
         var newKey = document.createElement("label");
         newKey.className = "keyboardKey";
         newKey.id = "key"+qwerty[i];
-        console.log(qwerty[i]);
         newKey.innerHTML = qwerty[i];
         newKey.style.height = keyboardKeySize + "%";
         newKey.style.width = keyboardKeySize + "%";
@@ -152,10 +151,8 @@ showKeyboard();
 
 document.addEventListener("keydown", function(e) {
     var delay = 0;
-	if (currentRow == gameAttempts && classic) {
-        //window.location.href = "../index.html";
-        gameOver = true;
-        playWordRevealAnimation(50);
+	if (gameOver) {
+        window.location.href = "../index.html";
     } else if (currentRow == gameAttempts && !classic) {
         while(wordleDiv.firstChild) {
             wordleDiv.removeChild(wordleDiv.firstChild);
@@ -240,8 +237,10 @@ async function checkWordleWord(guess) {
                 currentColumn = 0;
                 if (guess == gameWord) {
                     currentRow = gameAttempts;
+                    gameOver = true;
                 } else if (currentRow == gameAttempts && classic) {
-                    wordleInformation.innerHTML = "The Word Was " + gameWord;
+                    playWordRevealAnimation(50);
+                    gameOver = true;
                 } else {
                     makeWordleRow(currentRow);
                 }
@@ -255,7 +254,7 @@ async function checkWordleWord(guess) {
 
 function playWordRevealAnimation(speed) {
     document.getElementById("revealBackgroundContainer").hidden = false;
-    const textWriting = "The word is...";
+    const textWriting = "The Word Was...";
     var index = 0;
     const typing = setInterval(function() {
         if (index == textWriting.length+1) {
@@ -276,8 +275,8 @@ function revealWordAnimation(speed, textWriting) {
             if (index == gameWord.length+1) {
                 clearInterval(wordType);
             } else {
-                document.getElementById("revealBackgroundShade").innerHTML = textWriting + "\n\n\n\n\n\n\n\n" + gameWord.substring(0, index);
-                console.log(document.getElementById("revealBackgroundShade").innerHTML);
+                document.getElementById("revealBackgroundShadeWord").innerHTML = gameWord.substring(0, index);
+                //console.log(document.getElementById("revealBackgroundShade").innerHTML);
                 index++;
             }
         }, speed);
