@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="../css/wordle.css">
 </head>
 <body>
+    <div id="keyboard"></div>
     <img src="../assets/settingscreen/MegaWordleMegaLogo.png" id="megaLogo"></img>
     <h4 id="informationLabel" class="text"></h4>
     <h4 id="gameTimer" class="text" hidden="true">Time Left:</h4>
@@ -27,12 +28,14 @@
         <image id="startGameButton" src="../assets/settingscreen/MegaWordleSettingsStartButton.png"></image>
         <image id="settingsBackButton" src="../assets/settingscreen/MegaWordleSettingsBackButton.png"></image>
     </div>
+    <image src="../assets/gameplay/MegaWordleRedX.png" hidden="true" id="redX"></image>
     <script>
         //globals vars
         var classic = false;
         var gameSpots = 5;
-        var gameAttempts = 6;
-        var minimunWordScore = 800;
+        var gameTime = 180;
+        var eventTime = 30;
+        var minimumWordScore = 800;
     </script>
     <script src="../js/megaGame.js"></script>
     

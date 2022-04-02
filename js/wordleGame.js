@@ -1,6 +1,6 @@
 //percents
 const boxColumnStart = classic ? 23:5;//23
-const boxColumnEnd = classic ? 23:23;
+const boxColumnEnd = classic ? 23:40;
 const boxColumnSpacing = 1;
 const boxRowStart = 15;
 const boxRowSpacing = 3;
@@ -55,7 +55,7 @@ async function makeWordleWord() {
     const response = await httpGetAsync("https://api.datamuse.com/words?sp="+(alphabet[Math.floor(Math.random()*25)].toLowerCase())+questionMarks);
     var points = 0;
     var selection;
-    if (JSON.parse(response).length == 0 || JSON.parse(response)[0].score < minimunWordScore) {
+    if (JSON.parse(response).length == 0 || JSON.parse(response)[0].score < minimumWordScore) {
         console.log("trying again");
         gameWordSearchIndex++;
         if (gameWordSearchIndex > 30) {
@@ -64,7 +64,7 @@ async function makeWordleWord() {
             return makeWordleWord();
         }
     }
-    while (gameword.length != gameSpots || points < minimunWordScore || includesBadChars(gameword)) {
+    while (gameword.length != gameSpots || points < minimumWordScore || includesBadChars(gameword)) {
         selection = JSON.parse(response)[Math.floor(Math.random()*JSON.parse(response).length)];
         gameword = selection.word;
         points = selection.score;
@@ -148,12 +148,20 @@ function showKeyboard() {
 
 showKeyboard();
 
+function resetKeyboard() {
+    for (var i=0; i<keyboardGrid.childNodes.length; i++) {
+        keyboardGrid.childNodes[i].style.backgroundColor = "grey";
+    }
+}
+
 
 document.addEventListener("keydown", function(e) {
     var delay = 0;
 	if (gameOver) {
         window.location.href = "../index.html";
-    } else if (currentRow == gameAttempts && !classic) {
+    } else if (currentRow == -1 && !classic) {
+        console.log("start over");
+        resetKeyboard();
         while(wordleDiv.firstChild) {
             wordleDiv.removeChild(wordleDiv.firstChild);
         }
@@ -236,12 +244,19 @@ async function checkWordleWord(guess) {
                 currentRow++;
                 currentColumn = 0;
                 if (guess == gameWord) {
-                    currentRow = gameAttempts;
-                    gameOver = true;
-                } else if (currentRow == gameAttempts && classic) {
-                    playWordRevealAnimation(50);
-                    gameOver = true;
+                    if (classic) {
+                        currentRow = gameAttempts;
+                        gameOver = true;
+                    } else {
+                        currentRow = -1;
+                    }
+                } else if (classic) {
+                    if (currentRow == gameAttempts) {
+                        playWordRevealAnimation(50);
+                        gameOver = true;
+                    }
                 } else {
+                    console.log("trying this");
                     makeWordleRow(currentRow);
                 }
                 return;

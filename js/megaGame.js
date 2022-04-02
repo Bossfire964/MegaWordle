@@ -1,18 +1,24 @@
-let keepSettingsButton = document.getElementById("keepSettingsButton");
+let startGameButton = document.getElementById("startGameButton");
 let settingsBox = document.getElementById("gameSettings");
 let gameTimer = document.getElementById("gameTimer");
 let eventTimer = document.getElementById("eventTimer");
 let coinCount = document.getElementById("coinCount");
+let megaLogo = document.getElementById("megaLogo");
 
 
 
 const randomEventsTable = ["timeFreeze", "randomWord", "allGreyLetters", "startOver", "newWord", "letterHint", "inputDelay", "responsiveColoring"];
 const randomEventsTables = ["responsiveColoring"];
 
+//images
+let startGameButtonSource = "../assets/settingscreen/MegaWordleSettingsStartButton.png";
+let startGameButtonSourceHover = "../assets/settingscreen/MegaWordleSettingsStartButtonHover.png";
+
+let settingsBackButtonSource = "../assets/settingscreen/MegaWordleSettingsBackButton.png";
+let settingsBackButtonSourceHover = "../assets/settingscreen/MegaWordleSettingsBackButtonHover.png";
+//images 
 
 //temp
-const gameTime = 180;
-const eventTime = 10;
 const startingCoins = 3;
 //temp
 
@@ -24,18 +30,34 @@ var responsiveColoring = false;
 
 var coins = startingCoins;
 
-keepSettingsButton.addEventListener("click", function(e) {
-    gameSpots = document.getElementById("rowTextInput").value;
-    gameAttempts = document.getElementById("attemptsTextInput").value;
-    if (gameSpots <= 15) {
-        let wordleScript = document.createElement("script");
-        gameSpots = document.getElementById("rowTextInput").value;
-        gameAttempts = document.getElementById("attemptsTextInput").value;
-        wordleScript.src = "../js/wordleGame.js"
-        document.body.appendChild(wordleScript);
-        settingsBox.hidden = true;
-        runEventTimers();
-    }
+let wordLenthInput = document.getElementById("megaRowTextInput");
+let gameTimeInput = document.getElementById("megaGameTime");
+let eventTimerInput = document.getElementById("megaEventTimer");
+let minimumWordScoreInput = document.getElementById("megaMinimumWordScore");
+
+//setting defualts
+wordLenthInput.value = gameSpots;
+gameTimeInput.value = gameTime;
+eventTimerInput.value = eventTime;
+minimumWordScoreInput.value = minimumWordScore;
+//setting defualts
+
+
+
+startGameButton.addEventListener("click", function(e) {
+    gameSpots = wordLenthInput.value; //START HERE to change settings
+    gameTime = gameTimeInput.value;
+    eventTime = eventTimerInput.value;
+    minimumWordScore = minimumWordScoreInput.value;
+    let wordleScript = document.createElement("script");
+    wordleScript.src = "../js/wordleGame.js"
+    document.body.appendChild(wordleScript);
+    settingsBox.hidden = true;
+    runEventTimers();
+    megaLogo.style.left = "83%";
+    megaLogo.style.top = "0%";
+    megaLogo.style.height = "5%";
+    megaLogo.style.width = "15%";
     
    
 });
@@ -208,6 +230,37 @@ function getColorsOfBoxes(){
     }
     return returnString;
 }
+
+
+//Buttons for selection
+
+startGameButton.addEventListener("mouseover", function() {
+    if (startGameButton.src != startGameButtonSourceHover) {
+        startGameButton.src = startGameButtonSourceHover;
+    }
+});
+
+startGameButton.addEventListener("mouseout", function() {
+    if (startGameButton.src != startGameButtonSource) {
+        startGameButton.src = startGameButtonSource;
+    }
+});
+
+settingsBackButton.addEventListener("mouseover", function() {
+    if (settingsBackButton.src != settingsBackButtonSourceHover) {
+        settingsBackButton.src = settingsBackButtonSourceHover;
+    }
+});
+
+settingsBackButton.addEventListener("mouseout", function() {
+    if (settingsBackButton.src != settingsBackButtonSource) {
+        settingsBackButton.src = settingsBackButtonSource;
+    }
+});
+
+settingsBackButton.addEventListener("click", function() {
+    window.location.href = "../index.html";
+});
 
 
 
