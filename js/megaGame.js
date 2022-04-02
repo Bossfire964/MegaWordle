@@ -4,6 +4,8 @@ let gameTimer = document.getElementById("gameTimer");
 let eventTimer = document.getElementById("eventTimer");
 let coinCount = document.getElementById("coinCount");
 let megaLogo = document.getElementById("megaLogo");
+let eventTimerClock = document.getElementById("eventTimerClock");
+let eventTimerArrow = document.getElementById("eventTimerArrow");
 
 
 
@@ -45,7 +47,7 @@ minimumWordScoreInput.value = minimumWordScore;
 
 
 startGameButton.addEventListener("click", function(e) {
-    gameSpots = wordLenthInput.value; //START HERE to change settings
+    gameSpots = wordLenthInput.value; 
     gameTime = gameTimeInput.value;
     eventTime = eventTimerInput.value;
     minimumWordScore = minimumWordScoreInput.value;
@@ -54,16 +56,40 @@ startGameButton.addEventListener("click", function(e) {
     document.body.appendChild(wordleScript);
     settingsBox.hidden = true;
     runEventTimers();
+    arrowMove(100);
     megaLogo.style.left = "83%";
     megaLogo.style.top = "0%";
     megaLogo.style.height = "5%";
     megaLogo.style.width = "15%";
+    eventTimerClock.hidden = false;
+    eventTimerArrow.hidden = false;
     
    
 });
 
 
+
+function arrowMove(speed) {
+    var index = 0
+    setInterval(function() {
+        eventTimerArrow.style.transform = "rotate(" + (((360/eventTime)*(eventTime-eventTimeLeft)) + 270 + (index*((360/eventTime)/(1000/speed)))) + "deg)";
+        index++;
+        if (index == (1000/speed)) {
+            index = 0;
+            eventTimeLeft--;
+        }
+        if (eventTimeLeft == 0) {
+            randomEvent();
+            eventTimeLeft = eventTime;
+        }
+        eventTimer.innerHTML = "Event At: " + eventTimeLeft;
+    }, speed)
+    
+}
+
 function runEventTimers() {
+    timeLeft = gameTime;
+    eventTimeLeft = eventTime;
     gameTimer.hidden = false;
     eventTimer.hidden = false;
     coinCount.hidden = false;
@@ -72,18 +98,14 @@ function runEventTimers() {
     setInterval(function() {
         if (!timeFrozen) {
             timeLeft--;
-            eventTimeLeft--;
+            //eventTimeLeft--;
         }
         if (timeLeft == 0) {
             //game over
             window.location.href = "../index.html";
         }
-        if (eventTimeLeft == 0) {
-            randomEvent();
-            eventTimeLeft = eventTime;
-        }
         gameTimer.innerHTML = "Time Left: " + timeLeft;
-        eventTimer.innerHTML = "Event At: " + eventTimeLeft;
+        //eventTimerArrow.style.transform = "rotate(" + (((360/eventTime)*(eventTime-eventTimeLeft)) + 270) + "deg)";
     }, 1000)
 }
 

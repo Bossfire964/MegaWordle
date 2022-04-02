@@ -253,4 +253,26 @@
     color: white;
 }
 
+#eventTimerClock {
+    position: absolute;
+    /*left: 72%;
+    top: 15%;*/
+    left: 72vw;
+    top: 10vw;
+    height: 20vw;
+    width: 20vw;
+}
+
+#eventTimerArrow {
+    position: absolute;
+    /*left: 74.5%;
+    top: 26%;*/
+    left: 74.5vw;
+    top: 17vw;
+    height: 5vw;
+    width: 15vw;
+    z-index: 1;
+    transform: rotate(270deg);
+}
+
 
