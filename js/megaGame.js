@@ -1,16 +1,16 @@
 let startGameButton = document.getElementById("startGameButton");
 let settingsBox = document.getElementById("gameSettings");
 let gameTimer = document.getElementById("gameTimer");
-let eventTimer = document.getElementById("eventTimer");
 let coinCount = document.getElementById("coinCount");
 let megaLogo = document.getElementById("megaLogo");
 let eventTimerClock = document.getElementById("eventTimerClock");
 let eventTimerArrow = document.getElementById("eventTimerArrow");
+let gameTimerImage = document.getElementById("gameTimerImage");
 
 
 
 const randomEventsTable = ["timeFreeze", "randomWord", "allGreyLetters", "startOver", "newWord", "letterHint", "inputDelay", "responsiveColoring"];
-const randomEventsTables = ["responsiveColoring"];
+const randomEventsTables = ["allGreyLetters"];
 
 //images
 let startGameButtonSource = "../assets/settingscreen/MegaWordleSettingsStartButton.png";
@@ -63,6 +63,7 @@ startGameButton.addEventListener("click", function(e) {
     megaLogo.style.width = "15%";
     eventTimerClock.hidden = false;
     eventTimerArrow.hidden = false;
+    gameTimerImage.hidden = false;
     
    
 });
@@ -82,7 +83,6 @@ function arrowMove(speed) {
             randomEvent();
             eventTimeLeft = eventTime;
         }
-        eventTimer.innerHTML = "Event At: " + eventTimeLeft;
     }, speed)
     
 }
@@ -91,10 +91,9 @@ function runEventTimers() {
     timeLeft = gameTime;
     eventTimeLeft = eventTime;
     gameTimer.hidden = false;
-    eventTimer.hidden = false;
     coinCount.hidden = false;
     coinCount.innerHTML = "Coins: " + coins;
-    gameTimer.innerHTML = "Time Left: " + gameTime;
+    gameTimer.innerHTML = gameTime;
     setInterval(function() {
         if (!timeFrozen) {
             timeLeft--;
@@ -104,13 +103,13 @@ function runEventTimers() {
             //game over
             window.location.href = "../index.html";
         }
-        gameTimer.innerHTML = "Time Left: " + timeLeft;
+        gameTimer.innerHTML = timeLeft;
         //eventTimerArrow.style.transform = "rotate(" + (((360/eventTime)*(eventTime-eventTimeLeft)) + 270) + "deg)";
     }, 1000)
 }
 
 function randomEvent() {
-    var event = randomEventsTable[Math.floor(Math.random() * randomEventsTable.length)];
+    var event = randomEventsTables[Math.floor(Math.random() * randomEventsTables.length)];
     console.log(event);
     switch (event) {
         case "timeFreeze":    
@@ -127,8 +126,8 @@ function randomEvent() {
                 colorRow(currentRow, word);
                 currentRow++;
                 currentColumn = 0;
+                makeWordleRow(currentRow);
             });
-            makeWordleRow();
             break;
         case "allGreyLetters":
             const boxData = getColorsOfBoxes();

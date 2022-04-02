@@ -275,4 +275,31 @@
     transform: rotate(270deg);
 }
 
+#gameTimerImage {
+    position: absolute;
+    left: 65%;
+    top: 0%;
+}
+
+#gameTimerClock {
+    height: 5vw;
+    width: 5vw;
+}
+
+#gameTimerArrow {
+    position: absolute;
+    top: 2vw;
+    right: 1vw;
+    height: 1vw;
+    width: 3vw;
+    transform: rotate(270deg);
+}
+
+#gameTimer {
+    position: absolute;
+    top: -3.5vw;
+    left: 6.5vw;
+    font-size: 3vw;
+}
+
 
