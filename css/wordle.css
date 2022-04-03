@@ -56,15 +56,6 @@
     z-index: 2;
 }
 
-#informationLabel {
-    position: absolute;
-    left: 50%;
-    top: 10%;
-    text-align: center;
-    font-size: '40px';
-    font-family: 'Lucida Sans' 
-    ;
-}
 
 #settingBackground {
     z-index: 1;
@@ -300,6 +291,25 @@
     top: -3.5vw;
     left: 6.5vw;
     font-size: 3vw;
+}
+
+#currentEventLabel {
+    position: absolute;
+    left: 70%;
+    top: 8%;
+    font-size: 2vw;
+    text-align: center;
+    font-family: 'Lucida Sans';
+    color: white;
+}
+#currentEventTimeLeft {
+    position: absolute;
+    left: 87%;
+    top: 8%;
+    font-size: 2vw;
+    text-align: center;
+    font-family: 'Lucida Sans';
+    color: white;
 }
 
 

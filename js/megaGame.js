@@ -6,11 +6,13 @@ let megaLogo = document.getElementById("megaLogo");
 let eventTimerClock = document.getElementById("eventTimerClock");
 let eventTimerArrow = document.getElementById("eventTimerArrow");
 let gameTimerImage = document.getElementById("gameTimerImage");
+let currentEventLabel = document.getElementById("currentEventLabel");
+let currentEventTimeLeft = document.getElementById("currentEventTimeLeft");
 
 
 
 const randomEventsTable = ["timeFreeze", "randomWord", "allGreyLetters", "startOver", "newWord", "letterHint", "inputDelay", "responsiveColoring"];
-const randomEventsTables = ["allGreyLetters"];
+const randomEventsTables = ["randomWord"];
 
 //images
 let startGameButtonSource = "../assets/settingscreen/MegaWordleSettingsStartButton.png";
@@ -109,16 +111,19 @@ function runEventTimers() {
 }
 
 function randomEvent() {
-    var event = randomEventsTables[Math.floor(Math.random() * randomEventsTables.length)];
+    var event = randomEventsTable[Math.floor(Math.random() * randomEventsTable.length)];
     console.log(event);
     switch (event) {
         case "timeFreeze":    
-            timeFrozen = true;
+        displayEvent("Time Freeze", "white", "cyan", 5);    
+        timeFrozen = true;
             setTimeout(function() {
                 timeFrozen = false;
+                hideEvent();
             }, 5000);
             break;
         case "randomWord":
+            displayEvent("Random Word", "white", "grey", 0);        
             getRandomWord(function(word) {
                 for (var i = 0; i < gameSpots; i++) {
                     document.getElementById("box"+i+"row"+currentRow).innerHTML = word[i];
@@ -130,29 +135,33 @@ function randomEvent() {
             });
             break;
         case "allGreyLetters":
+            displayEvent("All Grey Letters", "white", "grey", 5);        
             const boxData = getColorsOfBoxes();
+            const rowOfBoxData = currentRow;
             for (var i = 0; i < currentRow; i++) {
                 for (var j=0; j<gameSpots; j++) {
                     document.getElementById("box"+j+"row"+i).style.backgroundColor = "grey";
                 }
             }
             setTimeout(function() {
-                setColorsOfBoxes(boxData);
+                setColorsOfBoxes(boxData, rowOfBoxData);
             }, 5000);
             break;
         case "startOver":
-            for (var i = 0; i < currentRow+1; i++) {
-                for (var j=0; j<gameSpots; j++) {
-                    document.getElementById("box"+j+"row"+i).innerHTML = "";
-                    document.getElementById("box"+j+"row"+i).style.backgroundColor = "black";
-                }
+            displayEvent("Start Over", "white", "grey", 0);        
+            while(document.getElementById("wordleBox").firstChild) {
+                document.getElementById("wordleBox").removeChild(document.getElementById("wordleBox").firstChild);
             }
             currentRow = 0;
             currentColumn = 0;
+            resetKeyboard();
+            makeWordleRow(currentRow);
             break;
 		case "newWord":
-			getRandomWord(function(result) {
-				gameWord = result
+            displayEvent("New Word", "white", "pink", 0);        
+            getRandomWord(function(result) {
+				resetKeyboard();
+                gameWord = result
 				for (var i = 0; i<currentRow; i++) {
 				var guessWord = "";
 				for (var j = 0; j<gameSpots; j++) {
@@ -162,30 +171,34 @@ function randomEvent() {
 
 			}
 			})
-			for (var i = 0; i<currentRow; i++) {
+			/*for (var i = 0; i<currentRow; i++) {
 				var guessWord = "";
 				for (var j = 0; j<gameSpots; j++) {
 					guessWord += document.getElementById("box"+j+"row"+i).innerHTML;
 				}
 				colorRow(i, guessWord);
 
-			}
+			}*/
 			break;
 		case "letterHint":
-			const randomSpot = Math.floor(Math.random() * (gameSpots-1));
+            displayEvent("Letter Hint", "white", "green", 0);        
+            const randomSpot = Math.floor(Math.random() * (gameSpots-1));
 			console.log("box"+randomSpot+"row"+currentRow);
 			const hintBox = document.getElementById("box"+randomSpot+"row"+currentRow);
 			hintBox.style.backgroundColor = "green"
 			hintBox.innerHTML = gameWord[randomSpot];
+            document.getElementById("key"+gameWord[randomSpot].toUpperCase()).style.backgroundColor = "green";
 			
 			break;
 		case "inputDelay":
-			inputDelayed = true;
+            displayEvent("Input Delay", "white", "purple", 5);        
+            inputDelayed = true;
 			setTimeout(function() {
 				inputDelayed = false;
 			}, 5000);
 			break;
         case "responsiveColoring":
+            displayEvent("Responsive Coloring", "white", "yellow", 5);        
             responsiveColoring = true;
             setTimeout(function() {
 				responsiveColoring = false;
@@ -210,9 +223,9 @@ async function getRandomWord(callback) {
 //b is nothing
 //n is new row
 
-function setColorsOfBoxes(data) {
+function setColorsOfBoxes(data, row) {
     const rowData = data.split("n");
-    for (var i = 0; i < currentRow; i++) {
+    for (var i = 0; i < row; i++) {
         for (var j=0; j<gameSpots; j++) {
             var color = "";
             switch(rowData[i][j]) {
@@ -284,10 +297,46 @@ settingsBackButton.addEventListener("click", function() {
 });
 
 
+function displayEvent(eventName, eventTextColor, eventBackgroundColor, timeOfEvent) {
+    currentEventLabel.innerHTML = eventName;
+    currentEventLabel.style.color = eventTextColor;
+    currentEventLabel.style.backgroundColor = eventBackgroundColor;
+    if (timeOfEvent != 0) {
+        currentEventTimeLeft.innerHTML = timeOfEvent;
+        var timeLeftInEvent = timeOfEvent;
+        const eventCountdownTime = setInterval(function() {
+            timeLeftInEvent--;
+            currentEventTimeLeft.innerHTML = timeLeftInEvent;
+            if (timeLeftInEvent == 0) {
+                currentEventTimeLeft.innerHTML = "";
+                currentEventLabel.innerHTML = "";
+                currentEventLabel.style.backgroundColor = "black";
+                clearInterval(eventCountdownTime);
+            }
+        }, 1000)
+        flashItem(currentEventLabel, 6, 100);
+    } else {
+        flashItem(currentEventLabel, 6, 100);
+        setTimeout(function() {
+            currentEventTimeLeft.innerHTML = "";
+            currentEventLabel.innerHTML = "";
+            currentEventLabel.style.backgroundColor = "black";
+        }, 1500);
+    }
+    
+    
+}
 
 
-//buying section
 
-//slot machines
-//speed wordle
-//speed typing
+
+async function flashItem(item, count, speed) {
+    var index = 0;
+    const blink = setInterval(function() {
+        item.hidden = !item.hidden;
+        index++;
+        if (index == count) {
+            clearInterval(blink);
+        }
+    }, speed);
+}
